@@ -1,13 +1,16 @@
 package main
 
 import (
+	"encoding/json"
+	"encoding/xml"
 	"fmt"
-	"time"
-	"net/http"
 	"hash/crc32"
-	"encoding/hex"
+	"log"
+	"net/http"
 	"os"
 	"reflect"
+	"strconv"
+	"time"
 )
 
 func main() {
@@ -25,18 +28,32 @@ func main() {
 	fmt.Fprintf(h, "Hello World")
 	fmt.Printf("hash=%x\n", h.Sum32())
 
-	h1 := hex.Dumper(os.Stdout)
+	// h1 := hex.Dumper(os.Stdout)
 	// defer h1.Close()
 	// fmt.Fprintf(h1, "Hello World\n")
 
 	type Lang struct {
 		Name string
 		Year int
-		URL string	
+		URL  string
 	}
-	
+
 	lang := Lang{"Go", 2009, "http://golang.org"}
-	fmt.Printf("%v\n", lang) // or %+v
+	fmt.Printf("%v\n", lang)
+	fmt.Printf("%+v\n", lang)
+	fmt.Printf("%#v\n", lang)
+
+	data, err := json.Marshal(lang)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%s\n", data)
+
+	data1, err1 := xml.MarshalIndent(lang, "", " ")
+	if err1 != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%s\n", data1)
 }
 
 type World struct{}
