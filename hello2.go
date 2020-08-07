@@ -22,7 +22,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%s", data)
+		fmt.Printf("%s\n", data)
 	})
 
 	start := time.Now()
@@ -32,9 +32,18 @@ func main() {
 		n++
 		go count(lang.Name, lang.URL, c)
 	})
+
+	timeout := time.After(10 * time.Second)
 	for i := 0; i < n; i++ {
-		fmt.Print(c)
+		select {
+		case result := <-c:
+			fmt.Print(result)
+		case <-timeout:
+			fmt.Print("Timed out\n")
+			return
+		}
 	}
+
 	fmt.Printf("%.2fs total\n", time.Since(start).Seconds())
 }
 
@@ -47,7 +56,7 @@ func count(name, url string, c chan<- string) {
 	}
 	n, _ := io.Copy(ioutil.Discard, r.Body)
 	r.Body.Close()
-	c <- fmt.Sprintf("%s %d [%.2fs]", name, n, time.Since(start).Seconds())
+	c <- fmt.Sprintf("%s %d [%.2fs]\n", name, n, time.Since(start).Seconds())
 }
 
 func do(f func(Lang)) {
