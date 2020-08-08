@@ -18,7 +18,7 @@ var tCreation bool = true
 
 func main() {
 	if tCreation {
-		grades := [...]int{97, 85, 93}
+		grades := [...]int{100, 85, 93}
 		fmt.Printf("Grades: %v", grades)
 
 		var students []string
