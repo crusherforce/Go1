@@ -1,11 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 var tMaps bool = false
 var tStruct bool = false
 var tAnonStruct bool = false
-var tEmbedding bool = true
+var tEmbedding bool = false
+var tTags bool = true
 
 func main() {
 	if tMaps {
@@ -59,5 +63,42 @@ func main() {
 			SpeedKPH float32
 			CanFly   bool
 		}
+
+		b := Bird{
+			Animal: Animal{
+				Name:   "Emu",
+				Origin: "Australia"},
+			SpeedKPH: 48,
+			CanFly:   false,
+		}
+
+		fmt.Println(b)
+	}
+
+	if tTags {
+		type Animal struct {
+			Name   string `required max:"100"`
+			Origin string
+		}
+
+		t := reflect.TypeOf(Animal{})
+		field, _ := t.FieldByName("Name")
+		fmt.Println(field)
 	}
 }
+
+/*
+Summary:
+-> Maps
+	-> Collections of value types that are accessed via keys
+	-> Created via literals or via 'make' functions
+	-> Members accessed via myMap["key"]
+	-> Check for presence with "value,ok" form of result
+-> Structs
+	-> Collections of disparate data types
+	-> Keyed by named fields
+	-> Normally created as types, but anon structs are allowed
+	-> Structs are value types
+	-> No inheritance, but can use composition via embedding
+	-> Tags can be added to struct fields to describe field
+*/
