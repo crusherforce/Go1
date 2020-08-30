@@ -18,7 +18,8 @@ import (
 
 var tSimple = false
 var tSendReceive = false
-var tLoopRange = true
+var tLoopRange = false
+var tAnotherGoPresentation = true
 
 var wg = sync.WaitGroup{}
 
@@ -80,4 +81,25 @@ func main() {
 		}(ch)
 		wg.Wait()
 	}
+
+	if tAnotherGoPresentation {
+		ch := computeAndSend(x,y,z)
+		v2 := anotherExpensiveComputation(a,b,c)
+		v1 := <-ch
+		fmt.Println(v1,v2)
+	}
+}
+
+func computeAndSend(x,y,z int) chan int {
+	ch := make(chan, int)
+	go func() {
+		ch <- expensiveComputation(x,y,z)
+	}()
+	return ch
+}
+
+func expensiveComputation(x,y,z int) {
+}
+
+func anotherExpensiveComputation(x,y,z int) {	
 }
